@@ -4,6 +4,8 @@ import {formatTimer} from '../utils/formatTimer';
 import styled from 'styled-components/native';
 import BackgroundTimer from 'react-native-background-timer';
 import BaseIcon from 'react-native-vector-icons/Ionicons';
+import {Text} from 'react-native';
+import {LocalNotification} from '../utils/notificationService';
 
 const Timer = styled.Text`
   font-size: 48.83px;
@@ -39,11 +41,20 @@ const Icon = styled(BaseIcon)`
 const TimerScreen = () => {
   const [running, setRunning] = useState(false);
   const [timer, setTimer] = useState(1800);
+  const [type, setType] = useState('pomodoro');
 
   useEffect(() => {
     if (running) {
       BackgroundTimer.runBackgroundTimer(() => {
-        setTimer((t) => t - 1);
+        setTimer((t) => {
+          if (t === 0) {
+            LocalNotification({
+              title: 'Pomodoro Session Completed.',
+              message: `The ${type} session has been completed. It's now time for a break!`,
+            });
+          }
+          return t - 1;
+        });
       }, 1000);
     } else if (!running) {
       BackgroundTimer.stopBackgroundTimer();
