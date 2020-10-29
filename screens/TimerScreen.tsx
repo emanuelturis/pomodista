@@ -46,6 +46,8 @@ const TimerScreen = () => {
     pomodorosLeft,
     setPomodorosLeft,
     autoStart,
+    shortBreak,
+    longBreak,
   } = useContext(TimerContext);
 
   const [running, setRunning] = useState(false);
@@ -102,7 +104,7 @@ const TimerScreen = () => {
   useEffect(() => {
     if (running) {
       return BackgroundTimer.runBackgroundTimer(() => {
-        setTimer((t) => t - 450);
+        setTimer((t) => t - 1);
       }, 1000);
     }
     return BackgroundTimer.stopBackgroundTimer();
@@ -119,6 +121,24 @@ const TimerScreen = () => {
       setTimer(pomodoro);
     }
   }, [timer]);
+
+  useEffect(() => {
+    if (type === 'pomodoro') {
+      setTimer(pomodoro);
+    }
+    if (type === 'shortBreak') {
+      setTimer(shortBreak);
+    }
+    if (type === 'longBreak') {
+      setTimer(longBreak);
+    }
+  }, [type]);
+
+  const typesTimers: {[key: string]: number} = {
+    pomodoro,
+    shortBreak,
+    longBreak,
+  };
 
   return (
     <Container>
@@ -151,6 +171,8 @@ const TimerScreen = () => {
         buttonType={type}
         setType={(type) => {
           setType(type);
+          setTimer(typesTimers[type]);
+          setRunning(false);
         }}
       />
     </Container>
