@@ -6,7 +6,6 @@ import BackgroundTimer from 'react-native-background-timer';
 import BaseIcon from 'react-native-vector-icons/Ionicons';
 import {LocalNotification} from '../utils/notificationService';
 import {TimerContext} from '../contexts/timerContext';
-import TypesButtons from '../components/TypesButtons';
 
 const Timer = styled.Text`
   font-size: 48.83px;
@@ -24,7 +23,7 @@ const Button = styled.TouchableOpacity`
 
 const ButtonText = styled.Text`
   color: #52616b;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
 `;
 
@@ -37,6 +36,12 @@ const Icon = styled(BaseIcon)`
   margin-top: 2px;
   font-size: 16px;
   color: #52616b;
+`;
+
+const Text = styled.Text`
+  color: #f0f5f9;
+  font-size: 20px;
+  font-weight: 700;
 `;
 
 const TimerScreen = () => {
@@ -104,7 +109,7 @@ const TimerScreen = () => {
   useEffect(() => {
     if (running) {
       return BackgroundTimer.runBackgroundTimer(() => {
-        setTimer((t) => t - 1);
+        setTimer((t) => t - 300);
       }, 1000);
     }
     return BackgroundTimer.stopBackgroundTimer();
@@ -134,10 +139,15 @@ const TimerScreen = () => {
     }
   }, [type]);
 
-  const typesTimers: {[key: string]: number} = {
-    pomodoro,
-    shortBreak,
-    longBreak,
+  useEffect(() => {
+    setTimer(pomodoro);
+    setType('pomodoro');
+  }, [pomodoro, shortBreak, longBreak]);
+
+  const TypesText: {[key: string]: string} = {
+    pomodoro: 'Pomodoro',
+    shortBreak: 'Short Break',
+    longBreak: 'Long Break',
   };
 
   return (
@@ -149,16 +159,30 @@ const TimerScreen = () => {
           <ButtonText>{!running ? 'Start Timer' : 'Stop Timer'}</ButtonText>
         </Button>
       </View>
+      {type === 'pomodoro' ? (
+        <View>
+          <Text>Focus</Text>
+        </View>
+      ) : (
+        <View>
+          <Text>{TypesText[type]}</Text>
+        </View>
+      )}
       <View style={{display: 'flex', flexDirection: 'row'}}>
         {[...Array(longBreakInterval)].map((e, i) => {
           if (pomodorosLeft > i) {
             return (
-              <BaseIcon name="md-checkmark" size={25} color="#F0F5F9" key={i} />
+              <BaseIcon
+                name="md-checkmark-circle"
+                size={25}
+                color="#F0F5F9"
+                key={i}
+              />
             );
           }
           return (
             <BaseIcon
-              name="md-checkmark"
+              name="md-checkmark-circle"
               size={25}
               color="#F0F5F9"
               style={{opacity: 0.5}}
@@ -167,14 +191,6 @@ const TimerScreen = () => {
           );
         })}
       </View>
-      <TypesButtons
-        buttonType={type}
-        setType={(type) => {
-          setType(type);
-          setTimer(typesTimers[type]);
-          setRunning(false);
-        }}
-      />
     </Container>
   );
 };

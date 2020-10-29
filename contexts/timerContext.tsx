@@ -1,4 +1,5 @@
 import React, {createContext, useReducer} from 'react';
+import {acos} from 'react-native-reanimated';
 
 interface ITimerContext {
   pomodoro: number;
@@ -52,6 +53,16 @@ interface Action {
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
+    case 'setPomodoro':
+      return {...state, pomodoro: action.payload};
+    case 'setShortBreak':
+      return {...state, shortBreak: action.payload};
+    case 'setLongBreak':
+      return {...state, longBreak: action.payload};
+    case 'setAutoStart':
+      return {...state, autoStart: action.payload};
+    case 'setLongBreakInterval':
+      return {...state, longBreakInterval: action.payload};
     case 'setPomodorosLeft':
       return {...state, pomodorosLeft: action.payload};
     default:
