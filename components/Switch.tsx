@@ -22,9 +22,15 @@ const Switch: React.FC<ISwitch> = ({defaultValue, updateValue, text}) => {
       <Text>{text}</Text>
       <BaseSwitch
         style={{alignSelf: 'center', marginTop: 8}}
+        trackColor={{
+          true: 'rgba(201, 214, 223, 0.8)',
+          false: 'rgba(201, 214, 223, 0.2)',
+        }}
+        thumbColor="#F0F5F9"
         value={defaultValue}
         onValueChange={(value) => updateValue(value)}
       />
+      <Text>{defaultValue ? 'On' : 'Off'}</Text>
     </View>
   );
 };
