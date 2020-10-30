@@ -140,9 +140,15 @@ const TimerScreen = () => {
   }, [type]);
 
   useEffect(() => {
+    setRunning(false);
     setTimer(pomodoro);
     setType('pomodoro');
   }, [pomodoro, shortBreak, longBreak]);
+
+  useEffect(() => {
+    setRunning(false);
+    setPomodorosLeft(longBreakInterval);
+  }, [longBreakInterval]);
 
   const TypesText: {[key: string]: string} = {
     pomodoro: 'Pomodoro',

@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import {Text} from 'react-native';
 import Slider from '../components/Slider';
+import Switch from '../components/Switch';
 import {TimerContext} from '../contexts/timerContext';
 import {Container} from '../styles';
 
@@ -14,6 +15,8 @@ const SettingsScreen = () => {
     setLongBreak,
     longBreakInterval,
     setLongBreakInterval,
+    autoStart,
+    setAutoStart,
   } = useContext(TimerContext);
   return (
     <Container>
@@ -38,7 +41,11 @@ const SettingsScreen = () => {
         updateValue={(value) => setLongBreakInterval(value)}
         noDecimal
       />
-      {/* Add Auto Start Toggle */}
+      <Switch
+        defaultValue={autoStart}
+        updateValue={(value) => setAutoStart(value)}
+        text="Auto Start"
+      />
     </Container>
   );
 };
