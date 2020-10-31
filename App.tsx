@@ -1,15 +1,21 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import TimerScreen from './screens/TimerScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import TimerContextProvider from './contexts/timerContext';
+import {createTable} from './utils/db/createTable';
+import StatsScreen from './screens/StatsScreen';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+  useEffect(() => {
+    createTable();
+  }, []);
+
   return (
     <>
       <NavigationContainer>
@@ -30,6 +36,15 @@ const App = () => {
               options={{
                 tabBarIcon: ({color, size}) => (
                   <Icon name="md-settings" color={color} size={size} />
+                ),
+              }}
+            />
+            <Tab.Screen
+              name="Stats"
+              component={StatsScreen}
+              options={{
+                tabBarIcon: ({color, size}) => (
+                  <Icon name="md-stats-chart" color={color} size={size} />
                 ),
               }}
             />

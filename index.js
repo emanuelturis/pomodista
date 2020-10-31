@@ -2,6 +2,9 @@
  * @format
  */
 
+// Fix for crypto.getRandomValues() not supported
+import 'react-native-get-random-values';
+
 import {AppRegistry, Platform} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';

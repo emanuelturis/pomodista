@@ -6,8 +6,14 @@ import BackgroundTimer from 'react-native-background-timer';
 import BaseIcon from 'react-native-vector-icons/Ionicons';
 import {LocalNotification} from '../utils/notificationService';
 import {TimerContext} from '../contexts/timerContext';
+import {insertIntoPomodoros} from '../utils/db/insertInto';
+import {selectFrom} from '../utils/db/select';
+import {v4 as uuidv4} from 'uuid';
+import {Keyboard} from 'react-native';
+import {updatePomodoro} from '../utils/db/update';
 
 const Timer = styled.Text`
+  margin-top: 16px;
   font-size: 48.83px;
   color: #f0f5f9;
 `;
@@ -44,6 +50,11 @@ const Text = styled.Text`
   font-weight: 700;
 `;
 
+const Name = styled.TextInput`
+  color: #f0f5f9;
+  font-size: 20px;
+`;
+
 const TimerScreen = () => {
   const {
     pomodoro,
@@ -58,6 +69,9 @@ const TimerScreen = () => {
   const [running, setRunning] = useState(false);
   const [timer, setTimer] = useState(pomodoro);
   const [type, setType] = useState('pomodoro');
+
+  const [name, setName] = useState('Set Task Name');
+  const [id, setId] = useState('');
 
   const decreasePomodorosLeft = () => {
     setPomodorosLeft(
@@ -89,6 +103,18 @@ const TimerScreen = () => {
     handleLocalNotification();
   };
 
+  const handleInsertIntoPomodoros = () => {
+    const pomodoro_id = uuidv4();
+
+    setId(pomodoro_id);
+
+    insertIntoPomodoros({
+      pomodoro_id,
+      started_at: new Date().toString(),
+      name,
+    });
+  };
+
   const Types: {[key: string]: string} = {
     pomodoro: 'pomodoro',
     shortBreak: 'short break',
@@ -118,12 +144,19 @@ const TimerScreen = () => {
   useEffect(() => {
     if (timer === 0 && autoStart === false) {
       handleDecreasePomodorosLeft();
-      setRunning(false);
       setTimer(pomodoro);
+      setRunning(false);
     }
     if (timer === 0 && autoStart === true) {
       handleDecreasePomodorosLeft();
       setTimer(pomodoro);
+      handleInsertIntoPomodoros();
+    }
+    if (timer === 0 && type === 'pomodoro') {
+      updatePomodoro({
+        pomodoro_id: id,
+        ended_at: new Date().toString(),
+      });
     }
   }, [timer]);
 
@@ -158,9 +191,22 @@ const TimerScreen = () => {
 
   return (
     <Container>
+      <Name
+        value={name}
+        onChangeText={(name) => setName(name)}
+        onBlur={() => !name && setName('Set Task Name')}
+      />
       <Timer>{formatTimer(timer)}</Timer>
       <View>
-        <Button activeOpacity={0.8} onPress={() => setRunning(!running)}>
+        <Button
+          activeOpacity={0.8}
+          onPress={() => {
+            if (timer === pomodoro && type === 'pomodoro' && !running) {
+              handleInsertIntoPomodoros();
+            }
+            setRunning(!running);
+            Keyboard.dismiss();
+          }}>
           <Icon name={!running ? 'md-play' : 'md-pause'} />
           <ButtonText>{!running ? 'Start Timer' : 'Stop Timer'}</ButtonText>
         </Button>
