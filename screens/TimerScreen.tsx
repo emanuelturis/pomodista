@@ -71,7 +71,6 @@ const TimerScreen = () => {
   const [type, setType] = useState('pomodoro');
 
   const [name, setName] = useState('Set Task Name');
-  const [id, setId] = useState('');
 
   const decreasePomodorosLeft = () => {
     setPomodorosLeft(
@@ -106,11 +105,10 @@ const TimerScreen = () => {
   const handleInsertIntoPomodoros = () => {
     const pomodoro_id = uuidv4();
 
-    setId(pomodoro_id);
-
     insertIntoPomodoros({
       pomodoro_id,
-      started_at: new Date().toString(),
+      total_seconds: pomodoro,
+      ended_at: new Date().toISOString(),
       name,
     });
   };
@@ -150,13 +148,9 @@ const TimerScreen = () => {
     if (timer === 0 && autoStart === true) {
       handleDecreasePomodorosLeft();
       setTimer(pomodoro);
-      handleInsertIntoPomodoros();
     }
     if (timer === 0 && type === 'pomodoro') {
-      updatePomodoro({
-        pomodoro_id: id,
-        ended_at: new Date().toString(),
-      });
+      handleInsertIntoPomodoros();
     }
   }, [timer]);
 
@@ -201,9 +195,6 @@ const TimerScreen = () => {
         <Button
           activeOpacity={0.8}
           onPress={() => {
-            if (timer === pomodoro && type === 'pomodoro' && !running) {
-              handleInsertIntoPomodoros();
-            }
             setRunning(!running);
             Keyboard.dismiss();
           }}>

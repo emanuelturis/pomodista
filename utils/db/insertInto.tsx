@@ -1,20 +1,21 @@
 import db from '.';
-import {IPomodoro} from '../../types';
 
 interface IInsertIntoPomodoros {
   pomodoro_id: string;
   name: string;
-  started_at: string;
+  ended_at: string;
+  total_seconds: number;
 }
 
 export const insertIntoPomodoros = ({
   pomodoro_id,
   name,
-  started_at,
+  ended_at,
+  total_seconds,
 }: IInsertIntoPomodoros) =>
   db.transaction((trx) => {
     trx.executeSql(
-      'INSERT INTO pomodoros (pomodoro_id, name, started_at) VALUES (?, ?, ?);',
-      [pomodoro_id, name, started_at],
+      'INSERT INTO pomodoros (pomodoro_id, name, ended_at, total_seconds) VALUES (?, ?, ?, ?);',
+      [pomodoro_id, name, ended_at, total_seconds],
     );
   });

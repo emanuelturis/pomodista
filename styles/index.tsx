@@ -6,3 +6,8 @@ export const Container = styled.View`
   justify-content: center;
   background-color: #52616b;
 `;
+
+export const ScrollableContainer = styled.ScrollView`
+  flex: 1;
+  background-color: #52616b;
+`;

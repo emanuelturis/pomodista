@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions} from 'react-native';
-import {BarChart} from 'react-native-chart-kit';
-import {Container} from '../styles';
+import {Dimensions, View} from 'react-native';
+import {ScrollableContainer} from '../styles';
 import {IPomodoro} from '../types';
 import db from '../utils/db';
 import groupBy from 'lodash/groupBy';
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
+import {VictoryPie} from 'victory-native';
+import styled from 'styled-components/native';
+import {subDays, startOfDay, addDays} from 'date-fns';
 
-const FETCH_POMODOROS = () =>
+const FETCH_POMODOROS = (startAt: string, endAt: string) =>
   new Promise<IPomodoro[]>((resolve) => {
     db.transaction((trx) => {
       trx.executeSql(
-        'SELECT * FROM pomodoros WHERE ended_at IS NOT NULL;',
-        [],
+        'SELECT * FROM pomodoros WHERE ended_at >= ? AND ended_at <= ?;',
+        [startAt, endAt],
         (_, result) => {
           const items = [...Array(result.rows.length)].map((_, i) =>
             result.rows.item(i),
@@ -23,77 +25,126 @@ const FETCH_POMODOROS = () =>
     });
   });
 
+const Text = styled.Text`
+  margin: 16px 12px;
+`;
+
 const StatsScreen = () => {
   const isFocused = useIsFocused();
 
-  const [pomodoros, setPomodoros] = useState<{[key: string]: IPomodoro[]}>({
-    '': [],
-  });
-  const [labels, setLabels] = useState(['']);
+  const [data, setData] = useState([{x: '', y: 0}]);
+  const [startAt, setStartAt] = useState(startOfDay(new Date()).toISOString());
+  const [endAt, setEndAt] = useState(new Date().toISOString());
 
   useEffect(() => {
     if (isFocused) {
-      FETCH_POMODOROS().then((results) => {
+      FETCH_POMODOROS(startAt, endAt).then((results) => {
         const pomodoros = groupBy(results, (r) => r.name);
         const labels = Object.keys(pomodoros);
 
-        setPomodoros(() => {
-          setLabels(labels);
-          return pomodoros;
-        });
+        setData(
+          labels.map((label) => {
+            const totalSeconds = pomodoros[label].reduce((a, b) => {
+              return a + b.total_seconds;
+            }, 0);
+
+            return {
+              x: label,
+              y: Math.floor(totalSeconds / 60),
+            };
+          }),
+        );
       });
     }
-  }, [isFocused]);
+  }, [isFocused, startAt, endAt]);
+
+  const TimePeriods = [
+    {
+      text: 'Today',
+      active: startAt === startOfDay(new Date()).toISOString(),
+      onPress: () => {
+        setStartAt(startOfDay(new Date()).toISOString());
+        setEndAt(new Date().toISOString());
+      },
+    },
+    {
+      text: 'Last 7 Days',
+      active: startAt === subDays(startOfDay(new Date()), 7).toISOString(),
+      onPress: () => {
+        setStartAt(subDays(startOfDay(new Date()), 7).toISOString());
+        setEndAt(new Date().toISOString());
+      },
+    },
+    {
+      text: 'Last 30 Days',
+      active: startAt === subDays(startOfDay(new Date()), 30).toISOString(),
+      onPress: () => {
+        setStartAt(subDays(startOfDay(new Date()), 30).toISOString());
+        setEndAt(new Date().toISOString());
+      },
+    },
+  ];
 
   return (
-    <Container>
-      <BarChart
-        data={{
-          labels,
-          datasets: [
-            {
-              data: labels.map((label) => {
-                const totalSeconds = pomodoros[label].reduce((a, b) => {
-                  if (!b.ended_at) {
-                    return a + 0;
-                  }
-
-                  const seconds =
-                    (new Date(b.ended_at).getTime() -
-                      new Date(b.started_at).getTime()) /
-                    1000;
-
-                  return a + seconds;
-                }, 0);
-
-                return totalSeconds;
-              }),
-            },
-          ],
-        }}
-        width={Dimensions.get('window').width - 32}
-        height={256}
-        yAxisLabel=""
-        yAxisSuffix=" m"
-        yAxisInterval={1}
-        chartConfig={{
-          backgroundColor: '#52616B',
-          backgroundGradientFrom: '#52616B',
-          backgroundGradientTo: '#52616B',
-          decimalPlaces: 0, // optional, defaults to 2dp
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          style: {
-            borderRadius: 16,
-          },
-          propsForDots: {
-            r: '8',
-            strokeWidth: '2',
-            stroke: '#52616B',
+    <ScrollableContainer
+      contentContainerStyle={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 16,
+        paddingBottom: 16,
+      }}>
+      <View
+        style={{
+          flexDirection: 'row',
+        }}>
+        {TimePeriods.map(({text, onPress, active}, index) => (
+          <Text
+            key={index}
+            style={{color: '#fff', opacity: active ? 1 : 0.5}}
+            onPress={onPress}>
+            {text}
+          </Text>
+        ))}
+      </View>
+      <VictoryPie
+        data={data}
+        labelRadius={50}
+        labels={({datum}) => `${datum.x}`}
+        style={{
+          labels: {
+            fill: '#fff',
           },
         }}
       />
-    </Container>
+      <View>
+        {data.map((value, index) => (
+          <View
+            key={index}
+            style={{
+              width: Dimensions.get('window').width - 32,
+              marginTop: 8,
+              borderRadius: 8,
+              backgroundColor: '#F0F5F9',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Text>{value.x}</Text>
+            <Text
+              style={{
+                backgroundColor: '#C9D6DF',
+                paddingTop: 2.5,
+                paddingBottom: 2.5,
+                paddingRight: 8,
+                paddingLeft: 8,
+                borderRadius: 8,
+              }}>
+              {value.y} Minutes
+            </Text>
+          </View>
+        ))}
+      </View>
+    </ScrollableContainer>
   );
 };
 
