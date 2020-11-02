@@ -7,7 +7,7 @@ import groupBy from 'lodash/groupBy';
 import {useIsFocused} from '@react-navigation/native';
 import {VictoryPie} from 'victory-native';
 import styled from 'styled-components/native';
-import {subDays, startOfDay, addDays} from 'date-fns';
+import {subDays, startOfDay} from 'date-fns';
 
 const FETCH_POMODOROS = (startAt: string, endAt: string) =>
   new Promise<IPomodoro[]>((resolve) => {
@@ -38,25 +38,30 @@ const StatsScreen = () => {
 
   useEffect(() => {
     if (isFocused) {
-      FETCH_POMODOROS(startAt, endAt).then((results) => {
-        const pomodoros = groupBy(results, (r) => r.name);
-        const labels = Object.keys(pomodoros);
-
-        setData(
-          labels.map((label) => {
-            const totalSeconds = pomodoros[label].reduce((a, b) => {
-              return a + b.total_seconds;
-            }, 0);
-
-            return {
-              x: label,
-              y: Math.floor(totalSeconds / 60),
-            };
-          }),
-        );
-      });
+      setStartAt(startOfDay(new Date()).toISOString());
+      setEndAt(new Date().toISOString());
     }
-  }, [isFocused, startAt, endAt]);
+  }, [isFocused]);
+
+  useEffect(() => {
+    FETCH_POMODOROS(startAt, endAt).then((results) => {
+      const pomodoros = groupBy(results, (r) => r.name);
+      const labels = Object.keys(pomodoros);
+
+      setData(
+        labels.map((label) => {
+          const totalSeconds = pomodoros[label].reduce((a, b) => {
+            return a + b.total_seconds;
+          }, 0);
+
+          return {
+            x: label,
+            y: Math.floor(totalSeconds / 60),
+          };
+        }),
+      );
+    });
+  }, [startAt, endAt]);
 
   const TimePeriods = [
     {
@@ -108,7 +113,7 @@ const StatsScreen = () => {
       </View>
       <VictoryPie
         data={data}
-        labelRadius={50}
+        labelRadius={75}
         labels={({datum}) => `${datum.x}`}
         style={{
           labels: {
@@ -139,7 +144,9 @@ const StatsScreen = () => {
                 paddingLeft: 8,
                 borderRadius: 8,
               }}>
-              {value.y} Minutes
+              {value.y < 60 && `${value.y} Minutes`}
+              {value.y === 60 && `${value.y / 60} Hour`}
+              {value.y > 60 && `${value.y / 60} Hours`}
             </Text>
           </View>
         ))}
