@@ -117,6 +117,12 @@ const StatsScreen = () => {
           </Text>
         ))}
       </View>
+      {data.length === 0 && (
+        <Text style={{color: '#fff', textAlign: 'center'}}>
+          No data is availabe. Try changing the time period to see your pomodoro
+          stats.
+        </Text>
+      )}
       <VictoryPie
         data={data}
         labelRadius={75}

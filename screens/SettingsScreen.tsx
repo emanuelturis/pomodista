@@ -1,9 +1,11 @@
 import React, {useContext} from 'react';
 import {Text} from 'react-native';
+import {not} from 'react-native-reanimated';
 import Slider from '../components/Slider';
 import Switch from '../components/Switch';
+import {NotificationContext} from '../contexts/notificationContext';
 import {TimerContext} from '../contexts/timerContext';
-import {Container} from '../styles';
+import {Container, ScrollableContainer} from '../styles';
 
 const SettingsScreen = () => {
   const {
@@ -18,8 +20,17 @@ const SettingsScreen = () => {
     autoStart,
     setAutoStart,
   } = useContext(TimerContext);
+
+  const {notify, setNotify} = useContext(NotificationContext);
+
   return (
-    <Container>
+    <ScrollableContainer
+      contentContainerStyle={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 16,
+        paddingBottom: 16,
+      }}>
       <Slider
         text="Pomodoro"
         defaultValue={pomodoro}
@@ -46,7 +57,12 @@ const SettingsScreen = () => {
         updateValue={(value) => setAutoStart(value)}
         text="Auto Start"
       />
-    </Container>
+      <Switch
+        defaultValue={notify}
+        updateValue={(value) => setNotify(value)}
+        text="Notifications"
+      />
+    </ScrollableContainer>
   );
 };
 

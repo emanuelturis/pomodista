@@ -11,6 +11,7 @@ import {selectFrom} from '../utils/db/select';
 import {v4 as uuidv4} from 'uuid';
 import {Keyboard} from 'react-native';
 import {updatePomodoro} from '../utils/db/update';
+import {NotificationContext} from '../contexts/notificationContext';
 
 const Timer = styled.Text`
   margin-top: 16px;
@@ -66,6 +67,8 @@ const TimerScreen = () => {
     longBreak,
   } = useContext(TimerContext);
 
+  const {notify} = useContext(NotificationContext);
+
   const [running, setRunning] = useState(false);
   const [timer, setTimer] = useState(pomodoro);
   const [type, setType] = useState('pomodoro');
@@ -120,6 +123,10 @@ const TimerScreen = () => {
   };
 
   const handleLocalNotification = () => {
+    if (!notify) {
+      return;
+    }
+
     return LocalNotification({
       title: 'Pomodoro Session Completed.',
       message: `The ${

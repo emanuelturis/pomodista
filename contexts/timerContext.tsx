@@ -1,5 +1,4 @@
 import React, {createContext, useReducer} from 'react';
-import {acos} from 'react-native-reanimated';
 
 interface ITimerContext {
   pomodoro: number;
