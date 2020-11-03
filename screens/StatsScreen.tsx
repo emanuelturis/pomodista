@@ -7,7 +7,8 @@ import groupBy from 'lodash/groupBy';
 import {useIsFocused} from '@react-navigation/native';
 import {VictoryPie} from 'victory-native';
 import styled from 'styled-components/native';
-import {subDays, startOfDay} from 'date-fns';
+import {subDays, startOfDay, formatDuration} from 'date-fns';
+import {intervalToDuration} from 'date-fns/esm';
 
 const FETCH_POMODOROS = (startAt: string, endAt: string) =>
   new Promise<IPomodoro[]>((resolve) => {
@@ -56,7 +57,7 @@ const StatsScreen = () => {
 
           return {
             x: label,
-            y: Math.floor(totalSeconds / 60),
+            y: totalSeconds,
           };
         }),
       );
@@ -89,6 +90,11 @@ const StatsScreen = () => {
       },
     },
   ];
+
+  const customFormatDuration = ({start, end}: {start: number; end: number}) => {
+    const durations = intervalToDuration({start, end});
+    return formatDuration(durations);
+  };
 
   return (
     <ScrollableContainer
@@ -144,9 +150,7 @@ const StatsScreen = () => {
                 paddingLeft: 8,
                 borderRadius: 8,
               }}>
-              {value.y < 60 && `${value.y} Minutes`}
-              {value.y === 60 && `${value.y / 60} Hour`}
-              {value.y > 60 && `${value.y / 60} Hours`}
+              {customFormatDuration({start: 0, end: value.y * 1000})}
             </Text>
           </View>
         ))}
