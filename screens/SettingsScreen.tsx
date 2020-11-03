@@ -1,4 +1,5 @@
 import React, {useContext} from 'react';
+import {View} from 'react-native';
 import Slider from '../components/Slider';
 import Switch from '../components/Switch';
 import {TimerContext} from '../contexts/timerContext';
@@ -49,16 +50,23 @@ const SettingsScreen = () => {
         updateValue={(value) => setLongBreakInterval(value)}
         noDecimal
       />
-      <Switch
-        defaultValue={autoStart}
-        updateValue={(value) => setAutoStart(value)}
-        text="Auto Start"
-      />
-      <Switch
-        defaultValue={notify}
-        updateValue={(value) => setNotify(value)}
-        text="Notifications"
-      />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: 250,
+        }}>
+        <Switch
+          defaultValue={autoStart}
+          updateValue={(value) => setAutoStart(value)}
+          text="Auto Start"
+        />
+        <Switch
+          defaultValue={notify}
+          updateValue={(value) => setNotify(value)}
+          text="Notifications"
+        />
+      </View>
     </ScrollableContainer>
   );
 };
