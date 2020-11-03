@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import TimerScreen from './screens/TimerScreen';
@@ -8,50 +8,55 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import TimerContextProvider from './contexts/timerContext';
 import {createTable} from './utils/db/createTable';
 import StatsScreen from './screens/StatsScreen';
-import NotificatonContextProvider from './contexts/notificationContext';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    createTable();
+    createTable().then(() => {
+      setLoading(false);
+    });
   }, []);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <>
       <NavigationContainer>
         <TimerContextProvider>
-          <NotificatonContextProvider>
-            <Tab.Navigator>
-              <Tab.Screen
-                name="Timer"
-                component={TimerScreen}
-                options={{
-                  tabBarIcon: ({color, size}) => (
-                    <Icon name="md-time" color={color} size={size} />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="Settings"
-                component={SettingsScreen}
-                options={{
-                  tabBarIcon: ({color, size}) => (
-                    <Icon name="md-settings" color={color} size={size} />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="Stats"
-                component={StatsScreen}
-                options={{
-                  tabBarIcon: ({color, size}) => (
-                    <Icon name="md-stats-chart" color={color} size={size} />
-                  ),
-                }}
-              />
-            </Tab.Navigator>
-          </NotificatonContextProvider>
+          <Tab.Navigator>
+            <Tab.Screen
+              name="Timer"
+              component={TimerScreen}
+              options={{
+                tabBarIcon: ({color, size}) => (
+                  <Icon name="md-time" color={color} size={size} />
+                ),
+              }}
+            />
+            <Tab.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{
+                tabBarIcon: ({color, size}) => (
+                  <Icon name="md-settings" color={color} size={size} />
+                ),
+              }}
+            />
+            <Tab.Screen
+              name="Stats"
+              component={StatsScreen}
+              options={{
+                tabBarIcon: ({color, size}) => (
+                  <Icon name="md-stats-chart" color={color} size={size} />
+                ),
+              }}
+            />
+          </Tab.Navigator>
         </TimerContextProvider>
       </NavigationContainer>
     </>

@@ -7,11 +7,8 @@ import BaseIcon from 'react-native-vector-icons/Ionicons';
 import {LocalNotification} from '../utils/notificationService';
 import {TimerContext} from '../contexts/timerContext';
 import {insertIntoPomodoros} from '../utils/db/insertInto';
-import {selectFrom} from '../utils/db/select';
 import {v4 as uuidv4} from 'uuid';
 import {Keyboard} from 'react-native';
-import {updatePomodoro} from '../utils/db/update';
-import {NotificationContext} from '../contexts/notificationContext';
 
 const Timer = styled.Text`
   margin-top: 16px;
@@ -65,9 +62,8 @@ const TimerScreen = () => {
     autoStart,
     shortBreak,
     longBreak,
+    notify,
   } = useContext(TimerContext);
-
-  const {notify} = useContext(NotificationContext);
 
   const [running, setRunning] = useState(false);
   const [timer, setTimer] = useState(pomodoro);

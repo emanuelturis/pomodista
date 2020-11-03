@@ -1,11 +1,8 @@
 import React, {useContext} from 'react';
-import {Text} from 'react-native';
-import {not} from 'react-native-reanimated';
 import Slider from '../components/Slider';
 import Switch from '../components/Switch';
-import {NotificationContext} from '../contexts/notificationContext';
 import {TimerContext} from '../contexts/timerContext';
-import {Container, ScrollableContainer} from '../styles';
+import {ScrollableContainer} from '../styles';
 
 const SettingsScreen = () => {
   const {
@@ -19,9 +16,9 @@ const SettingsScreen = () => {
     setLongBreakInterval,
     autoStart,
     setAutoStart,
+    notify,
+    setNotify,
   } = useContext(TimerContext);
-
-  const {notify, setNotify} = useContext(NotificationContext);
 
   return (
     <ScrollableContainer
