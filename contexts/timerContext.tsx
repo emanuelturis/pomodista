@@ -127,7 +127,7 @@ const TimerContextProvider: React.FC = ({children}) => {
         payload: results.long_break_interval,
       });
       dispatch({type: 'setPomodorosLeft', payload: results.pomodoros_left});
-      dispatch({type: 'setNotify', payload: results.notify});
+      dispatch({type: 'setNotify', payload: results.notify === 1 ? true : false});
     });
   }, []);
 
