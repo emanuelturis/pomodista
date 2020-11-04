@@ -118,7 +118,13 @@ const StatsScreen = () => {
         ))}
       </View>
       {data.length === 0 && (
-        <Text style={{color: '#fff', textAlign: 'center'}}>
+        <Text
+          style={{
+            color: '#fff',
+            textAlign: 'center',
+            paddingLeft: 32,
+            paddingRight: 32,
+          }}>
           No data is availabe. Try changing the time period to see your pomodoro
           stats.
         </Text>

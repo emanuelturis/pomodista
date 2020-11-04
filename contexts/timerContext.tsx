@@ -1,4 +1,3 @@
-import {getStateFromPath} from '@react-navigation/native';
 import React, {createContext, useEffect, useReducer} from 'react';
 import {ISettings} from '../types';
 import db from '../utils/db';
@@ -127,7 +126,10 @@ const TimerContextProvider: React.FC = ({children}) => {
         payload: results.long_break_interval,
       });
       dispatch({type: 'setPomodorosLeft', payload: results.pomodoros_left});
-      dispatch({type: 'setNotify', payload: results.notify === 1 ? true : false});
+      dispatch({
+        type: 'setNotify',
+        payload: results.notify === 1 ? true : false,
+      });
     });
   }, []);
 

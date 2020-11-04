@@ -12,5 +12,5 @@ export interface ISettings {
   auto_start: number;
   long_break_interval: number;
   pomodoros_left: number;
-  notify: boolean;
+  notify: number;
 }
