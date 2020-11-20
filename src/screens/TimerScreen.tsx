@@ -201,7 +201,7 @@ const TimerScreen = () => {
             setRunning(!running);
             Keyboard.dismiss();
           }}>
-          <Icon name={!running ? 'md-play' : 'md-pause'} />
+          <Icon name={!running ? 'play' : 'pause'} />
           <ButtonText>{!running ? 'Start Timer' : 'Stop Timer'}</ButtonText>
         </Button>
       </View>
@@ -219,7 +219,7 @@ const TimerScreen = () => {
           if (pomodorosLeft > i) {
             return (
               <BaseIcon
-                name="md-checkmark-circle"
+                name="checkmark-circle"
                 size={25}
                 color="#F0F5F9"
                 key={i}
@@ -228,7 +228,7 @@ const TimerScreen = () => {
           }
           return (
             <BaseIcon
-              name="md-checkmark-circle"
+              name="checkmark-circle"
               size={25}
               color="#F0F5F9"
               style={{opacity: 0.5}}

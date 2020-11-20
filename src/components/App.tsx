@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import TimerContextProvider from '../contexts/timerContext';
 import {createTable} from '../utils/db/createTable';
 import StatsScreen from '../screens/StatsScreen';
+import { Platform } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +35,7 @@ const App = () => {
               component={TimerScreen}
               options={{
                 tabBarIcon: ({color, size}) => (
-                  <Icon name="md-time" color={color} size={size} />
+                  <Icon name="time" color={color} size={size} />
                 ),
               }}
             />
@@ -43,7 +44,7 @@ const App = () => {
               component={SettingsScreen}
               options={{
                 tabBarIcon: ({color, size}) => (
-                  <Icon name="md-settings" color={color} size={size} />
+                  <Icon name="settings" color={color} size={size} />
                 ),
               }}
             />
@@ -52,7 +53,7 @@ const App = () => {
               component={StatsScreen}
               options={{
                 tabBarIcon: ({color, size}) => (
-                  <Icon name="md-stats-chart" color={color} size={size} />
+                  <Icon name="stats-chart" color={color} size={size} />
                 ),
               }}
             />
