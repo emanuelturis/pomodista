@@ -131,8 +131,13 @@ const StatsScreen = () => {
         )}
         <VictoryPie
           data={data}
-          labelRadius={75}
-          labels={({datum}) => `${datum.x}`}
+          labelRadius={25}
+          labels={({datum}) => {
+            if (datum.endAngle - datum.startAngle > 45) {
+              return `${datum.x}`;
+            }
+            return '';
+          }}
           style={{
             labels: {
               fill: '#fff',
