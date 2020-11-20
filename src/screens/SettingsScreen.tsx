@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
 import {View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Slider from '../components/Slider';
 import Switch from '../components/Switch';
 import {TimerContext} from '../contexts/timerContext';
-import {ScrollableContainer} from '../styles';
+import {Container, ScrollableContainer} from '../styles';
 
 const SettingsScreen = () => {
   const {
@@ -22,13 +23,7 @@ const SettingsScreen = () => {
   } = useContext(TimerContext);
 
   return (
-    <ScrollableContainer
-      contentContainerStyle={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 16,
-        paddingBottom: 16,
-      }}>
+    <Container>
       <Slider
         text="Pomodoro"
         defaultValue={pomodoro}
@@ -67,7 +62,7 @@ const SettingsScreen = () => {
           text="Notifications"
         />
       </View>
-    </ScrollableContainer>
+    </Container>
   );
 };
 

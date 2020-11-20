@@ -8,7 +8,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import TimerContextProvider from '../contexts/timerContext';
 import {createTable} from '../utils/db/createTable';
 import StatsScreen from '../screens/StatsScreen';
-import { Platform } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 

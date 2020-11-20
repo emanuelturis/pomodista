@@ -9,6 +9,7 @@ import {VictoryPie} from 'victory-native';
 import styled from 'styled-components/native';
 import {subDays, startOfDay, formatDuration} from 'date-fns';
 import {intervalToDuration} from 'date-fns/esm';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FETCH_POMODOROS = (startAt: string, endAt: string) =>
   new Promise<IPomodoro[]>((resolve) => {
@@ -97,77 +98,77 @@ const StatsScreen = () => {
   };
 
   return (
-    <ScrollableContainer
-      contentContainerStyle={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 16,
-        paddingBottom: 16,
-      }}>
-      <View
-        style={{
-          flexDirection: 'row',
+    <SafeAreaView style={{flex: 1, backgroundColor: '#52616B'}}>
+      <ScrollableContainer
+        contentContainerStyle={{
+          justifyContent: 'center',
+          alignItems: 'center',
         }}>
-        {TimePeriods.map(({text, onPress, active}, index) => (
-          <Text
-            key={index}
-            style={{color: '#fff', opacity: active ? 1 : 0.5}}
-            onPress={onPress}>
-            {text}
-          </Text>
-        ))}
-      </View>
-      {data.length === 0 && (
-        <Text
+        <View
           style={{
-            color: '#fff',
-            textAlign: 'center',
-            paddingLeft: 32,
-            paddingRight: 32,
+            flexDirection: 'row',
           }}>
-          No data is availabe. Try changing the time period to see your pomodoro
-          stats.
-        </Text>
-      )}
-      <VictoryPie
-        data={data}
-        labelRadius={75}
-        labels={({datum}) => `${datum.x}`}
-        style={{
-          labels: {
-            fill: '#fff',
-          },
-        }}
-      />
-      <View>
-        {data.map((value, index) => (
-          <View
-            key={index}
-            style={{
-              width: Dimensions.get('window').width - 32,
-              marginTop: 8,
-              borderRadius: 8,
-              backgroundColor: '#F0F5F9',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text>{value.x}</Text>
+          {TimePeriods.map(({text, onPress, active}, index) => (
             <Text
-              style={{
-                backgroundColor: '#C9D6DF',
-                paddingTop: 2.5,
-                paddingBottom: 2.5,
-                paddingRight: 8,
-                paddingLeft: 8,
-                borderRadius: 8,
-              }}>
-              {customFormatDuration({start: 0, end: value.y * 1000})}
+              key={index}
+              style={{color: '#fff', opacity: active ? 1 : 0.5}}
+              onPress={onPress}>
+              {text}
             </Text>
-          </View>
-        ))}
-      </View>
-    </ScrollableContainer>
+          ))}
+        </View>
+        {data.length === 0 && (
+          <Text
+            style={{
+              color: '#fff',
+              textAlign: 'center',
+              paddingLeft: 32,
+              paddingRight: 32,
+            }}>
+            No data is availabe. Try changing the time period to see your
+            pomodoro stats.
+          </Text>
+        )}
+        <VictoryPie
+          data={data}
+          labelRadius={75}
+          labels={({datum}) => `${datum.x}`}
+          style={{
+            labels: {
+              fill: '#fff',
+            },
+          }}
+        />
+        <View>
+          {data.map((value, index) => (
+            <View
+              key={index}
+              style={{
+                width: Dimensions.get('window').width - 32,
+                marginTop: 8,
+                borderRadius: 8,
+                backgroundColor: '#F0F5F9',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text>{value.x}</Text>
+              <Text
+                style={{
+                  backgroundColor: '#C9D6DF',
+                  paddingTop: 2.5,
+                  paddingBottom: 2.5,
+                  paddingRight: 8,
+                  paddingLeft: 8,
+                  borderRadius: 8,
+                }}>
+                {customFormatDuration({start: 0, end: value.y * 1000})}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </ScrollableContainer>
+    </SafeAreaView>
   );
 };
 
