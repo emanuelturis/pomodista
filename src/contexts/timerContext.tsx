@@ -113,7 +113,6 @@ const TimerContextProvider: React.FC = ({children}) => {
       if (!results) {
         return;
       }
-      console.log(results);
       dispatch({type: 'setPomodoro', payload: results.pomodoro});
       dispatch({type: 'setShortBreak', payload: results.short_break});
       dispatch({type: 'setLongBreak', payload: results.long_break});
