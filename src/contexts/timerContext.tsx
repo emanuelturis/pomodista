@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useReducer} from 'react';
+import React, {createContext, useEffect, useReducer, useState} from 'react';
 import {ISettings} from '../types';
 import db from '../utils/db';
 
@@ -108,11 +108,14 @@ const TimerContextProvider: React.FC = ({children}) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     FETCH_SETTINGS().then((results) => {
       if (!results) {
         return;
       }
+      setLoading(false);
       dispatch({type: 'setPomodoro', payload: results.pomodoro});
       dispatch({type: 'setShortBreak', payload: results.short_break});
       dispatch({type: 'setLongBreak', payload: results.long_break});
@@ -131,6 +134,10 @@ const TimerContextProvider: React.FC = ({children}) => {
       });
     });
   }, []);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <TimerContext.Provider
