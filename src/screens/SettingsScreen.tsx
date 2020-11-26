@@ -20,6 +20,7 @@ const SettingsScreen = () => {
     setAutoStart,
     notify,
     setNotify,
+    setPomodorosLeft,
   } = useContext(TimerContext);
 
   return (
@@ -42,7 +43,10 @@ const SettingsScreen = () => {
       <Slider
         text="Long Break Interval"
         defaultValue={longBreakInterval}
-        updateValue={(value) => setLongBreakInterval(value)}
+        updateValue={(value) => {
+          setLongBreakInterval(value);
+          setPomodorosLeft(value);
+        }}
         noDecimal
       />
       <View

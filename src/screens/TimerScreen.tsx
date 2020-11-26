@@ -175,11 +175,6 @@ const TimerScreen = () => {
     setType('pomodoro');
   }, [pomodoro, shortBreak, longBreak]);
 
-  useEffect(() => {
-    setRunning(false);
-    setPomodorosLeft(longBreakInterval);
-  }, [longBreakInterval]);
-
   const TypesText: {[key: string]: string} = {
     pomodoro: 'Pomodoro',
     shortBreak: 'Short Break',
